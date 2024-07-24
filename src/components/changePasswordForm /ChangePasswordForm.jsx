@@ -1,3 +1,4 @@
+import { DevTool } from "@hookform/devtools";
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
@@ -39,13 +40,15 @@ const ChangePasswordForm = () => {
                 control={control}
                 defaultValue=""
                 rules={{ required: "Cari sifrə tələb olunur" }}
-                render={({ field }) => (
+                render={(
+                  { field } //fildi inputa veririk ki inputda yazilanlari ala bilek ve validasiyadan keciririk
+                ) => (
                   <Input
-                    {...field}
+                    {...field} //inputa veririk ki inputda yazilanlari ala bilek ve validasiyadan keciririk
                     id="currentPassword"
                     placeholder="Cari sifrənizi daxil edin"
                     type="password"
-                    invalid={!!errors.currentPassword}
+                    invalid={!!errors.currentPassword} //eger error varsa invalid olur ve error mesajini gosterir
                   />
                 )}
               />
@@ -65,6 +68,11 @@ const ChangePasswordForm = () => {
                   minLength: {
                     value: 8,
                     message: "Sifrə ən azı 8 simvol olmalıdır",
+                  },
+                  pattern: {
+                    value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
+                    message:
+                      "Sifrə ən azı 1 böyük hərf, 1 kiçik hərf və 1 rəqəm olmalıdır",
                   },
                 }}
                 render={({ field }) => (
@@ -114,6 +122,7 @@ const ChangePasswordForm = () => {
           </Form>
         </Col>
       </Row>
+      <DevTool control={control} placement="top-right" />
     </Container>
   );
 };

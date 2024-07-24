@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
+import { DevTool } from "@hookform/devtools";
 import {
   Button,
   Form,
@@ -46,7 +47,7 @@ const LoginForm = () => {
           <h2 className="text-center mb-4">Giriş Forması</h2>
           <Form onSubmit={handleSubmit(onSubmit)}>
             <FormGroup>
-              <Label for="email">Email</Label>
+              <Label htmlFor="email">Email</Label>
               <Controller
                 name="email"
                 control={control}
@@ -66,6 +67,7 @@ const LoginForm = () => {
                     type="email"
                     invalid={!!errors.email && (isDirty || isTouched)}
                     aria-describedby="emailHelp"
+                    onChange={(e) => field.onChange(e)}
                   />
                 )}
               />
@@ -75,7 +77,7 @@ const LoginForm = () => {
             </FormGroup>
 
             <FormGroup>
-              <Label for="password">Şifrə</Label>
+              <Label htmlFor="password">Şifrə</Label>
               <Controller
                 name="password"
                 control={control}
@@ -95,6 +97,7 @@ const LoginForm = () => {
                     type="password"
                     invalid={!!errors.password && (isDirty || isTouched)}
                     aria-describedby="passwordHelp"
+                    onChange={(e) => field.onChange(e)}
                   />
                 )}
               />
@@ -114,6 +117,7 @@ const LoginForm = () => {
           </Form>
         </Col>
       </Row>
+      <DevTool control={control} placement="top-right" />
     </Container>
   );
 };

@@ -11,8 +11,8 @@ function App() {
     <>
       {/* <HookForm /> */}
       {/* <FormComponent /> */}
-      {/* <ChangePasswordForm /> */}
-      <LoginForm />
+      <ChangePasswordForm />
+      {/* <LoginForm /> */}
     </>
   );
 }
