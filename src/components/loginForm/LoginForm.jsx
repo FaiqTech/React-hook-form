@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
   Button,
@@ -10,20 +10,33 @@ import {
   Container,
   Row,
   Col,
+  Spinner,
 } from "reactstrap";
 
 const LoginForm = () => {
+  const [loading, setLoading] = useState(false); // Yükləmə vəziyyəti
   const {
     handleSubmit,
     control,
     reset,
-    formState: { errors },
-  } = useForm();
+    formState: { errors, isSubmitting, isDirty, isTouched, isValid },
+  } = useForm({
+    mode: "onChange", // Formun dəyişdirildiyi anda validasiya edilməsi
+    reValidateMode: "onChange", // Formu dəyişikliklərdən sonra yenidən doğrulama
+  });
 
-  const onSubmit = (data) => {
-    console.log(data);
-    // Form göndərildikdən sonra formu sıfırlayırıq
-    reset();
+  const onSubmit = async (data) => {
+    setLoading(true);
+    try {
+      // Simulyasiya edilmiş asinxron əməliyyat (API çağırışı və s.)
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      console.log(data);
+    } catch (error) {
+      console.error("Submission error:", error);
+    } finally {
+      setLoading(false);
+      reset(); // Formu sıfırlayırıq
+    }
   };
 
   return (
@@ -32,7 +45,6 @@ const LoginForm = () => {
         <Col md="6">
           <h2 className="text-center mb-4">Giriş Forması</h2>
           <Form onSubmit={handleSubmit(onSubmit)}>
-            {/* Email sahəsi */}
             <FormGroup>
               <Label for="email">Email</Label>
               <Controller
@@ -52,16 +64,16 @@ const LoginForm = () => {
                     id="email"
                     placeholder="Emailinizi daxil edin"
                     type="email"
-                    invalid={!!errors.email}
+                    invalid={!!errors.email && (isDirty || isTouched)}
+                    aria-describedby="emailHelp"
                   />
                 )}
               />
-              {errors.email && (
-                <FormFeedback>{errors.email.message}</FormFeedback>
-              )}
+              <FormFeedback id="emailHelp">
+                {errors.email ? errors.email.message : ""}
+              </FormFeedback>
             </FormGroup>
 
-            {/* Şifrə sahəsi */}
             <FormGroup>
               <Label for="password">Şifrə</Label>
               <Controller
@@ -72,7 +84,7 @@ const LoginForm = () => {
                   required: "Şifrə tələb olunur",
                   minLength: {
                     value: 6,
-                    message: "Şifrə ən az 6 simvoldan ibarət olmalıdır",
+                    message: "Şifrə ən azı 6 simvol olmalıdır",
                   },
                 }}
                 render={({ field }) => (
@@ -81,18 +93,23 @@ const LoginForm = () => {
                     id="password"
                     placeholder="Şifrənizi daxil edin"
                     type="password"
-                    invalid={!!errors.password}
+                    invalid={!!errors.password && (isDirty || isTouched)}
+                    aria-describedby="passwordHelp"
                   />
                 )}
               />
-              {errors.password && (
-                <FormFeedback>{errors.password.message}</FormFeedback>
-              )}
+              <FormFeedback id="passwordHelp">
+                {errors.password ? errors.password.message : ""}
+              </FormFeedback>
             </FormGroup>
 
-            {/* Giriş düyməsi */}
-            <Button color="primary" block type="submit">
-              Giriş
+            <Button
+              color="primary"
+              block
+              type="submit"
+              disabled={isSubmitting || loading || !isValid}
+            >
+              {loading ? <Spinner size="sm" /> : "Giriş"}
             </Button>
           </Form>
         </Col>
